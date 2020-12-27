@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/memeGalleryFragment">
+    <fragment
+        android:id="@+id/memeGalleryFragment"
+        android:name="br.com.brunoccbertolini.memessoundgame.view.memegallery.MemeGalleryFragment"
+        android:label="@string/meme_gallery"
+        tools:layout="@layout/memesgallery_fragment" >
+        <action
+            android:id="@+id/action_memeGalleryFragment_to_addMemeFragment"
+            app:destination="@id/addMemeFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addMemeFragment"
+        android:name="br.com.brunoccbertolini.memessoundgame.view.addmeme.AddMemeFragment"
+        android:label="@string/add_gallery"
+        tools:layout="@layout/add_meme_fragment" >
+        <action
+            android:id="@+id/action_addMemeFragment_to_memeGalleryFragment"
+            app:destination="@id/memeGalleryFragment" />
+    </fragment>
+</navigation>

@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:padding="16dp"
+    tools:context=".view.addmeme.AddMemeFragment">
+
+    <ImageView
+        android:id="@+id/add_image"
+        android:layout_width="150dp"
+        android:layout_height="105dp"
+        android:layout_marginTop="24dp"
+        android:src="@drawable/add_new_image"
+        app:layout_constraintEnd_toStartOf="@+id/add_audio"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/input_layout_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="16dp"
+        android:textColorHint="@color/colorPrimary"
+        android:background="@color/white"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/add_image">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/add_title_meme"
+            android:layout_width="match_parent"
+            android:textColorHint="@color/colorPrimary"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:hint="@string/meme_title"
+            android:inputType="textCapSentences" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/add_meme_button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="32dp"
+        android:background="@drawable/add_meme_buttom_shape"
+        android:textColor="@android:color/white"
+        android:layout_marginEnd="8dp"
+        app:rippleColor="@color/colorPrimaryDark"
+        android:text="@string/addmemebutton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/input_layout_title" />
+
+    <ImageView
+        android:id="@+id/add_audio"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="24dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:src="@drawable/add_new_audio"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/add_image"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/audioSrc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="139dp"
+        android:layout_marginBottom="239dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/add_meme_button"
+        app:layout_constraintTop_toBottomOf="@+id/add_image" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
