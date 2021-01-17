@@ -1,8 +1,6 @@
 package br.com.brunoccbertolini.memessoundgame.view.addmeme
 
 import android.content.Context
-import android.graphics.Bitmap
-import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import androidx.lifecycle.LiveData
@@ -13,7 +11,6 @@ import br.com.brunoccbertolini.memessoundgame.R
 import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
 import kotlinx.coroutines.launch
 import java.io.File
-import java.lang.Exception
 
 class AddMemeViewModel(
     val repository: MemeRepository

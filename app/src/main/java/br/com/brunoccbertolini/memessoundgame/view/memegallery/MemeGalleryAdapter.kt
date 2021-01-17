@@ -1,7 +1,6 @@
 package br.com.brunoccbertolini.memessoundgame.view.memegallery
 
 
-import android.net.Uri
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -10,11 +9,9 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView
-import br.com.brunoccbertolini.memessoundgame.R
+import br.com.brunoccbertolini.memessoundgame.databinding.RecyclerItemBinding
 import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
 import com.bumptech.glide.Glide
-import kotlinx.android.synthetic.main.add_meme_fragment.view.*
-import kotlinx.android.synthetic.main.recycler_item.view.*
 
 class MemeGalleryAdapter(
     private val memes: List<MemeEntity>,
@@ -22,10 +19,8 @@ class MemeGalleryAdapter(
 ) : RecyclerView.Adapter<MemeGalleryAdapter.MemeGalleryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemeGalleryViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.recycler_item, parent, false)
-
-        return MemeGalleryViewHolder(view)
+        val itemBinding = RecyclerItemBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        return MemeGalleryViewHolder(itemBinding)
     }
 
     override fun onBindViewHolder(holder: MemeGalleryViewHolder, position: Int) {
@@ -34,12 +29,12 @@ class MemeGalleryAdapter(
 
     override fun getItemCount() = memes.size
 
-    inner class MemeGalleryViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView),
+    inner class MemeGalleryViewHolder(viewBinding: RecyclerItemBinding) : RecyclerView.ViewHolder(viewBinding.root),
         View.OnClickListener {
 
-        private val textViewMemeTitle: TextView = itemView.text_meme_item
-        private val imageViewMemeSrc: ImageView = itemView.image_meme_item
-        private val soundSrc = itemView.sound_meme_item
+        private val textViewMemeTitle: TextView = viewBinding.textMemeItem
+        private val imageViewMemeSrc: ImageView = viewBinding.imageMemeItem
+        private val soundSrc = viewBinding.soundMemeItem
 
 
         init {
@@ -48,7 +43,7 @@ class MemeGalleryAdapter(
 
         fun bindView(meme: MemeEntity) {
             textViewMemeTitle.text = meme.title
-            soundSrc.text =meme.audioUrl
+            soundSrc.text = meme.audioUrl
             Log.e("Audio INT:", "${meme.audioUrl}")
 
             if (!meme.imgUrl.isNullOrEmpty()) {
@@ -58,7 +53,7 @@ class MemeGalleryAdapter(
                         .load(meme.imgUrl.toInt())
                         .centerCrop()
                         .into(imageViewMemeSrc)
-                }else {
+                } else {
                     Log.e("Img URL Adapter STRING", "${meme.imgUrl}")
                     Glide.with(itemView.context)
                         .load(meme.imgUrl)
@@ -69,16 +64,26 @@ class MemeGalleryAdapter(
 
         }
 
+
         override fun onClick(p0: View?) {
             val position = adapterPosition
             if (position != RecyclerView.NO_POSITION) {
                 memes[position].audioUrl?.let { listener.onItemClick(it) }
             }
         }
+
+//        override fun onLongClick(view: View):Boolean{
+//            val position = adapterPosition
+//            if(position != RecyclerView.NO_POSITION){
+//                memes[position].id.let { listener.onLongItemClick(it) }
+//            }
+//            return true
+//        }
     }
 
     interface OnItemClickListener {
         fun onItemClick(audioUrl: String)
+        fun onLongItemClick(id: Long)
 
     }
 
