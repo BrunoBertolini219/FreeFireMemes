@@ -1,6 +1,5 @@
 package br.com.brunoccbertolini.memessoundgame.model
 
-import android.graphics.Bitmap
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 

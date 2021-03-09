@@ -15,7 +15,7 @@ import com.bumptech.glide.Glide
 
 class MemeGalleryAdapter(
     private val memes: List<MemeEntity>,
-    private val listener: OnItemClickListener
+    private val listener: OnItemClickListener,
 ) : RecyclerView.Adapter<MemeGalleryAdapter.MemeGalleryViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MemeGalleryViewHolder {
@@ -30,7 +30,7 @@ class MemeGalleryAdapter(
     override fun getItemCount() = memes.size
 
     inner class MemeGalleryViewHolder(viewBinding: RecyclerItemBinding) : RecyclerView.ViewHolder(viewBinding.root),
-        View.OnClickListener {
+        View.OnClickListener, View.OnLongClickListener {
 
         private val textViewMemeTitle: TextView = viewBinding.textMemeItem
         private val imageViewMemeSrc: ImageView = viewBinding.imageMemeItem
@@ -39,6 +39,7 @@ class MemeGalleryAdapter(
 
         init {
             itemView.setOnClickListener(this)
+            itemView.setOnLongClickListener(this)
         }
 
         fun bindView(meme: MemeEntity) {
@@ -72,13 +73,16 @@ class MemeGalleryAdapter(
             }
         }
 
-//        override fun onLongClick(view: View):Boolean{
-//            val position = adapterPosition
-//            if(position != RecyclerView.NO_POSITION){
-//                memes[position].id.let { listener.onLongItemClick(it) }
-//            }
-//            return true
-//        }
+
+        override fun onLongClick(view: View): Boolean {
+            Log.i("TAG_DELETE_ADAPTER", "delete")
+            val position = adapterPosition
+            if(position != RecyclerView.NO_POSITION){
+                memes[position].id.let { listener.onLongItemClick(it) }
+
+            }
+           return true
+        }
     }
 
     interface OnItemClickListener {

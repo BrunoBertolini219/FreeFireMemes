@@ -11,14 +11,17 @@
 
     <ImageView
         android:id="@+id/add_image"
-        android:layout_width="150dp"
-        android:layout_height="105dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="24dp"
         android:src="@drawable/add_new_image"
         app:layout_constraintEnd_toStartOf="@+id/add_audio"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:foreground="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true" />
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/input_layout_title"
@@ -71,7 +74,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/add_image"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:foreground="?android:attr/selectableItemBackground" />
 
     <TextView
         android:id="@+id/audioSrc"

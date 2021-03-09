@@ -1,8 +1,5 @@
 package br.com.brunoccbertolini.memessoundgame.repository
 
-import android.graphics.Bitmap
-import android.net.Uri
-import androidx.lifecycle.LiveData
 import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
 
 interface MemeRepository {

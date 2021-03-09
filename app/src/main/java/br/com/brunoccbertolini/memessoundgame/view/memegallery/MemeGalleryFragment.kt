@@ -1,5 +1,6 @@
 package br.com.brunoccbertolini.memessoundgame.view.memegallery
 
+
 import android.media.AudioAttributes
 import android.media.AudioManager
 import android.media.MediaPlayer
@@ -11,6 +12,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -25,6 +27,8 @@ import br.com.brunoccbertolini.memessoundgame.model.AppDatabase
 import br.com.brunoccbertolini.memessoundgame.model.MemeDao
 import br.com.brunoccbertolini.memessoundgame.repository.DatabaseDataSource
 import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.android.synthetic.main.recycler_item.view.*
 import java.io.IOException
 
 
@@ -32,6 +36,8 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
     MemeGalleryAdapter.OnItemClickListener {
     lateinit var soundPool: SoundPool
     private var mediaPlayer: MediaPlayer? = MediaPlayer()
+    lateinit var memeGalleryAdapter: MemeGalleryAdapter
+
 
     private var _binding: MemesgalleryFragmentBinding? = null
     private val binding:MemesgalleryFragmentBinding get() = _binding!!
@@ -83,8 +89,7 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
 
     private fun observerViewModelEvents() {
         viewModel.allMemeEvent.observe(viewLifecycleOwner) { allMemes ->
-            val memeGalleryAdapter = MemeGalleryAdapter(allMemes, this)
-
+            memeGalleryAdapter = MemeGalleryAdapter(allMemes, this)
             binding.recyclerView.apply {
                 setHasFixedSize(true)
                 adapter = memeGalleryAdapter
@@ -132,7 +137,18 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
     }
 
     override fun onLongItemClick(id: Long) {
-        TODO("Not yet implemented")
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.delete_title))
+            .setMessage(resources.getString(R.string.delete_message))
+            .setNegativeButton(resources.getString(R.string.decline)){_,_ ->}
+            .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
+                viewModel.deleteMeme(id)
+                viewModel.memeRemoveEvent.observe(viewLifecycleOwner){
+                    Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                }
+            }
+            .show()
     }
 
     override fun onResume() {
