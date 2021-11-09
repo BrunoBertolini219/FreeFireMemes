@@ -1,7 +1,6 @@
 package br.com.brunoccbertolini.memessoundgame.repository
 
 
-import androidx.lifecycle.LiveData
 import br.com.brunoccbertolini.memessoundgame.model.MemeDao
 import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
 

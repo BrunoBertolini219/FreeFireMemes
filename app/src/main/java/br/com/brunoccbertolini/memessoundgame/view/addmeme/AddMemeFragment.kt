@@ -1,20 +1,15 @@
 package br.com.brunoccbertolini.memessoundgame.view.addmeme
 
 
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.graphics.Bitmap
-import android.graphics.ImageDecoder
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
 import android.provider.MediaStore
-import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
@@ -25,19 +20,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.loader.content.CursorLoader
 import androidx.navigation.fragment.findNavController
 import br.com.brunoccbertolini.memessoundgame.R
+import br.com.brunoccbertolini.memessoundgame.databinding.AddMemeFragmentBinding
 import br.com.brunoccbertolini.memessoundgame.extension.hideKeyboard
 import br.com.brunoccbertolini.memessoundgame.extension.navigateWithAnimations
 import br.com.brunoccbertolini.memessoundgame.model.AppDatabase
 import br.com.brunoccbertolini.memessoundgame.model.MemeDao
-import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
 import br.com.brunoccbertolini.memessoundgame.repository.DatabaseDataSource
 import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.add_meme_fragment.*
-import kotlinx.coroutines.runBlocking
 
 
 class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
@@ -47,10 +39,19 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
     private val AUDIO_REQUEST_CODE: Int = 90
     private var imageUri: Uri? = null
     private var audioUri: Uri? = null
-    private var audio = ""
+
+    private var _binding: AddMemeFragmentBinding? = null
+    private val binding: AddMemeFragmentBinding get() = _binding!!
 
 
-    private lateinit var bitmap: Bitmap
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        _binding = AddMemeFragmentBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
     private val viewModel: AddMemeViewModel by viewModels {
         object : ViewModelProvider.Factory {
@@ -90,7 +91,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
     }
 
     private fun clearFields() {
-        add_title_meme.text?.clear()
+        binding.addTitleMeme.text?.clear()
 
     }
 
@@ -145,7 +146,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
     }
 
     private fun setImage() {
-        add_image.setOnClickListener {
+        binding.addImage.setOnClickListener {
             checkForPermissions(
                     android.Manifest.permission.MEDIA_CONTENT_CONTROL,
                     "Gallery Content",
@@ -156,7 +157,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
         }
     }
     private fun setAudio() {
-        add_audio.setOnClickListener {
+        binding.addAudio.setOnClickListener {
 
                 checkForPermissions(
                     android.Manifest.permission.MEDIA_CONTENT_CONTROL,
@@ -182,8 +183,8 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
     }
 
     private fun setListeners() {
-        add_meme_button.setOnClickListener {
-            val title = add_title_meme.text.toString()
+        binding.addMemeButton.setOnClickListener {
+            val title = binding.addTitleMeme.text.toString()
             val image = "$imageUri"
             val audio = "$audioUri"
 
@@ -229,7 +230,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
             if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
                 imageUri = data.data
 
-                add_image.setImageURI(Uri.parse(imageUri.toString()))
+                binding.addImage.setImageURI(Uri.parse(imageUri.toString()))
 
             } else if (requestCode == AUDIO_REQUEST_CODE) {
                 audioUri = data.data
@@ -240,6 +241,11 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
 
             }
         }
+    }
+
+    override fun onDestroyView() {
+        _binding = null
+        super.onDestroyView()
     }
 }
 
