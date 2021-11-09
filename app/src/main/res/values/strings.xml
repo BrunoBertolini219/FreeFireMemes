@@ -1,6 +1,6 @@
 <resources>
-    <string name="app_name">FreeFireSoundMemes</string>
-    <string name="action_settings">Settings</string>
+    <string name="app_name">Memes de FreeFire</string>
+    <string name="action_settings">Configurações</string>
     <!-- Strings used for fragments for navigation -->
 
     <string name="next">Next</string>
@@ -20,5 +20,7 @@
     <string name="delete_message">Você tem certeza que quer apagar esse meme?</string>
     <string name="decline">Cancelar</string>
     <string name="accept">Apagar</string>
+    <string name="tituloPermisão">Permissão</string>
+    <string name="positiveButton">Ok</string>
 
 </resources>

@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.memessoundgame.model
+package br.com.brunoccbertolini.memessoundgame.domain.model
 
 import androidx.room.Dao
 import androidx.room.Insert

@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.memessoundgame.model
+package br.com.brunoccbertolini.memessoundgame.domain.model
 
 import android.content.Context
 import androidx.room.Database
@@ -15,7 +15,7 @@ abstract val memeDao: MemeDao
         private var INSTANCE: AppDatabase? = null
 
 
-        fun getInstance(context: Context): AppDatabase{
+        fun getInstance(context: Context): AppDatabase {
             synchronized(this){
                 var instance: AppDatabase? = INSTANCE
                 if(instance == null){
@@ -24,7 +24,7 @@ abstract val memeDao: MemeDao
                         AppDatabase::class.java,
                         "app.db")
                         .allowMainThreadQueries()
-                        .createFromAsset("database/meme_nobru.db")
+                        .createFromAsset("database/meme.db")
                         .build()
                 }
                 return instance

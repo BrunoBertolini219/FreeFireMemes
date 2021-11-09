@@ -1,4 +1,5 @@
-package br.com.brunoccbertolini.memessoundgame.view.addmeme
+package br.com.brunoccbertolini.memessoundgame.ui.addmeme
+
 
 
 import android.content.Intent
@@ -16,23 +17,17 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat.checkSelfPermission
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import br.com.brunoccbertolini.memessoundgame.R
 import br.com.brunoccbertolini.memessoundgame.databinding.AddMemeFragmentBinding
 import br.com.brunoccbertolini.memessoundgame.extension.hideKeyboard
 import br.com.brunoccbertolini.memessoundgame.extension.navigateWithAnimations
-import br.com.brunoccbertolini.memessoundgame.model.AppDatabase
-import br.com.brunoccbertolini.memessoundgame.model.MemeDao
-import br.com.brunoccbertolini.memessoundgame.repository.DatabaseDataSource
-import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
+@AndroidEntryPoint
+class AddMemeFragment : androidx.fragment.app.Fragment(R.layout.add_meme_fragment) {
 
     private val IMAGE_GALLERY_REQUEST_CODE: Int = 100
     private val MEDIA_CONTEXT_REQUEST_CODE: Int = 80
@@ -53,18 +48,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
         return binding.root
     }
 
-    private val viewModel: AddMemeViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-
-                val memeDao: MemeDao =
-                    AppDatabase.getInstance(requireContext()).memeDao
-
-                val repository: MemeRepository = DatabaseDataSource(memeDao)
-                return AddMemeViewModel(repository) as T
-            }
-        }
-    }
+    private val viewModel: AddMemeViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -81,7 +65,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
                     clearFields()
                     hideKeyBoard()
                     requireView().requestFocus()
-                    findNavController().popBackStack()
+                    findNavController().navigateWithAnimations(R.id.action_addMemeFragment_to_memeGalleryFragment)
                 }
             }
         }
@@ -131,9 +115,9 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
         val builder = AlertDialog.Builder(this.requireContext())
 
         builder.apply {
-            setMessage("Permission to access your $name is required to use this app")
-            setTitle("Permission required")
-            setPositiveButton("Ok") { dialog, which ->
+            setMessage("Permissão para acessar $name é necessária")
+            setTitle(getString(R.string.tituloPermisão))
+            setPositiveButton(getString(R.string.positiveButton)) { dialog, which ->
                 ActivityCompat.requestPermissions(
                     this@AddMemeFragment.requireActivity(),
                     arrayOf(permission),
@@ -194,6 +178,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
             } else {
                 viewModel.getAppSpecificAlbumStorageDir(requireContext(), title)
                 viewModel.addMeme(title, image, audio)
+                observerEvents()
                 findNavController().navigateWithAnimations(R.id.action_addMemeFragment_to_memeGalleryFragment)
             }
         }
@@ -218,10 +203,7 @@ class AddMemeFragment : Fragment(R.layout.add_meme_fragment) {
 
             AUDIO_REQUEST_CODE -> innerCheck("Audio Content")
         }
-
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
-
 
     @RequiresApi(Build.VERSION_CODES.P)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

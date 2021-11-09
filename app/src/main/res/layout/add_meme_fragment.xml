@@ -7,7 +7,7 @@
     android:focusable="true"
     android:focusableInTouchMode="true"
     android:padding="16dp"
-    tools:context=".view.addmeme.AddMemeFragment">
+    tools:context=".ui.addmeme.AddMemeFragment">
 
     <ImageView
         android:id="@+id/add_image"

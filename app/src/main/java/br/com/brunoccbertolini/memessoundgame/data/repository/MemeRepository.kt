@@ -1,6 +1,6 @@
-package br.com.brunoccbertolini.memessoundgame.repository
+package br.com.brunoccbertolini.memessoundgame.data.repository
 
-import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
+import br.com.brunoccbertolini.memessoundgame.domain.model.MemeEntity
 
 interface MemeRepository {
 
