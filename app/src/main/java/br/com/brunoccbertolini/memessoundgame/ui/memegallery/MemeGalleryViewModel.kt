@@ -8,6 +8,8 @@ import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.memessoundgame.R
 import br.com.brunoccbertolini.memessoundgame.domain.model.MemeEntity
 import br.com.brunoccbertolini.memessoundgame.data.repository.MemeRepository
+import br.com.brunoccbertolini.memessoundgame.domain.usecase.DeleteMemeUseCase
+import br.com.brunoccbertolini.memessoundgame.domain.usecase.GetMemesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.lang.Exception
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class MemeGalleryViewModel @Inject constructor(
-    private val repository: MemeRepository
+    private val deleteMemeUseCase: DeleteMemeUseCase,
+    private val getMemesUseCase: GetMemesUseCase
 ) : ViewModel() {
     private val _allMemesEvent = MutableLiveData<List<MemeEntity>>()
     val allMemeEvent: LiveData<List<MemeEntity>>
@@ -27,7 +30,7 @@ class MemeGalleryViewModel @Inject constructor(
 
     fun deleteMeme(id: Long) = viewModelScope.launch {
       try {
-          repository.deleteMeme(id)
+          deleteMemeUseCase.invoke(id)
           getMemes()
           _memeRemoveEvent.value = R.string.meme_deleted_succesfully
       }catch (e: Exception){
@@ -40,7 +43,7 @@ class MemeGalleryViewModel @Inject constructor(
     }
 
     fun getMemes() = viewModelScope.launch {
-        _allMemesEvent.postValue(repository.getAllMemes())
+        _allMemesEvent.postValue(getMemesUseCase.invoke())
     }
 
     sealed class MemeState {
