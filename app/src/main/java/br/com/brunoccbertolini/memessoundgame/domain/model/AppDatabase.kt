@@ -5,30 +5,29 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database (entities = [MemeEntity::class], version = 1)
-abstract class AppDatabase: RoomDatabase() {
+@Database(entities = [MemeEntity::class], version = 1)
+abstract class AppDatabase : RoomDatabase() {
 
-abstract val memeDao: MemeDao
+    abstract fun getMemeDao(): MemeDao
 
-    companion object{
+    companion object {
         @Volatile
         private var INSTANCE: AppDatabase? = null
+        private val LOCK = Any()
 
 
-        fun getInstance(context: Context): AppDatabase {
-            synchronized(this){
-                var instance: AppDatabase? = INSTANCE
-                if(instance == null){
-                    instance = Room.databaseBuilder(
-                        context,
-                        AppDatabase::class.java,
-                        "app.db")
-                        .allowMainThreadQueries()
-                        .createFromAsset("database/meme.db")
-                        .build()
-                }
-                return instance
-            }
+        operator fun invoke(context: Context) = INSTANCE ?: synchronized(LOCK) {
+            INSTANCE ?: createDatabase(context).also { INSTANCE = it }
         }
+
+        private fun createDatabase(context: Context) =
+            Room.databaseBuilder(
+                context.applicationContext,
+                AppDatabase::class.java,
+                "meme.db"
+            )
+                .allowMainThreadQueries()
+                .createFromAsset("database/meme.db")
+                .build()
     }
 }

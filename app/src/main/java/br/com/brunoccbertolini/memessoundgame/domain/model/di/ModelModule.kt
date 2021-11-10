@@ -18,11 +18,11 @@ object ModelModule {
     @Provides
     fun provideMemeDatabase(
         @ApplicationContext context: Context
-    ) = Room.databaseBuilder(context, AppDatabase::class.java, "meme_db")
+    ) = Room.databaseBuilder(context, AppDatabase::class.java, "meme.db").build()
 
     @Singleton
     @Provides
     fun provideMemeDao(
         database: AppDatabase
-    ) = database.memeDao
+    ) = database.getMemeDao()
 }

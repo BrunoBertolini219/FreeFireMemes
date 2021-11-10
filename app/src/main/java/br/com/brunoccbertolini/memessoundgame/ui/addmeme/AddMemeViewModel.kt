@@ -8,7 +8,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.memessoundgame.R
-import br.com.brunoccbertolini.memessoundgame.data.repository.MemeRepository
+import br.com.brunoccbertolini.memessoundgame.domain.usecase.CreateMemeUseCase
+import br.com.brunoccbertolini.memessoundgame.domain.usecase.DeleteAllMemesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
@@ -16,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddMemeViewModel @Inject constructor(
-    val repository: MemeRepository
+    private val insertMemeUseCase: CreateMemeUseCase,
+    private val deleteAllMemesUseCase: DeleteAllMemesUseCase
 ) : ViewModel() {
 
 
@@ -30,7 +32,7 @@ class AddMemeViewModel @Inject constructor(
 
     fun addMeme(title: String, imgURl: String, audioUrl: String) = viewModelScope.launch {
         try {
-            repository.upsertMeme(title, imgURl, audioUrl)
+            insertMemeUseCase.invoke(title, imgURl, audioUrl)
             _memeStateEventData.value = MemeState.Inserted
             _messegeEventData.value = R.string.meme_inserted_succesfully
 
@@ -41,7 +43,7 @@ class AddMemeViewModel @Inject constructor(
     }
 
     fun deleteAllMemes() = viewModelScope.launch {
-        repository.deleteAllMemes()
+        deleteAllMemesUseCase.invoke()
         _memeStateEventData.value = MemeState.Deleted
         _messegeEventData.value = R.string.meme_deleted_succesfully
     }

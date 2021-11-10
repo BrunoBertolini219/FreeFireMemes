@@ -8,7 +8,7 @@ import dagger.hilt.components.SingletonComponent
 
 @Module
 @InstallIn(SingletonComponent::class)
-interface DomainModule {
+interface UseCaseModule {
 
     @Binds
     fun bindCreateMemeUseCase(useCase: CreateMemeUseCaseImpl ): CreateMemeUseCase
@@ -18,5 +18,8 @@ interface DomainModule {
 
     @Binds
     fun bindDeleteMemeUseCase(useCase: DeleteMemeUseCaseImpl): DeleteMemeUseCase
+
+    @Binds
+    fun bindDeleteAllMemesUseCase(useCase: DeleteAllMemesUseCaseImpl): DeleteAllMemesUseCase
 
 }
