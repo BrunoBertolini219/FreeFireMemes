@@ -1,20 +1,20 @@
-package br.com.brunoccbertolini.memessoundgame.view.memegallery
+package br.com.brunoccbertolini.memessoundgame.ui.memegallery
 
 import android.util.Log
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.memessoundgame.R
-import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
-import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
-import br.com.brunoccbertolini.memessoundgame.view.addmeme.AddMemeViewModel
+import br.com.brunoccbertolini.memessoundgame.domain.model.MemeEntity
+import br.com.brunoccbertolini.memessoundgame.data.repository.MemeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.lang.Exception
+import javax.inject.Inject
 
-
-class MemeGalleryViewModel(
+@HiltViewModel
+class MemeGalleryViewModel @Inject constructor(
     private val repository: MemeRepository
 ) : ViewModel() {
     private val _allMemesEvent = MutableLiveData<List<MemeEntity>>()

@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.memessoundgame
+package br.com.brunoccbertolini.memessoundgame.ui
 
 import android.os.Bundle
 import android.view.Menu
@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupWithNavController
+import br.com.brunoccbertolini.memessoundgame.R
 import br.com.brunoccbertolini.memessoundgame.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
 

@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.memessoundgame.view.addmeme
+package br.com.brunoccbertolini.memessoundgame.ui.addmeme
 
 import android.content.Context
 import android.os.Environment
@@ -8,11 +8,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import br.com.brunoccbertolini.memessoundgame.R
-import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
+import br.com.brunoccbertolini.memessoundgame.data.repository.MemeRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import java.io.File
+import javax.inject.Inject
 
-class AddMemeViewModel(
+@HiltViewModel
+class AddMemeViewModel @Inject constructor(
     val repository: MemeRepository
 ) : ViewModel() {
 
@@ -27,9 +30,9 @@ class AddMemeViewModel(
 
     fun addMeme(title: String, imgURl: String, audioUrl: String) = viewModelScope.launch {
         try {
-            val id = repository.upsertMeme(title, imgURl, audioUrl)
-                _memeStateEventData.value = MemeState.Inserted
-                _messegeEventData.value = R.string.meme_inserted_succesfully
+            repository.upsertMeme(title, imgURl, audioUrl)
+            _memeStateEventData.value = MemeState.Inserted
+            _messegeEventData.value = R.string.meme_inserted_succesfully
 
         } catch (ex: Exception) {
             _messegeEventData.value = R.string.error_inserting_meme

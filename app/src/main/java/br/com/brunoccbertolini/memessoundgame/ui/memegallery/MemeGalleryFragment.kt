@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.memessoundgame.view.memegallery
+package br.com.brunoccbertolini.memessoundgame.ui.memegallery
 
 
 import android.media.AudioAttributes
@@ -16,22 +16,16 @@ import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import br.com.brunoccbertolini.memessoundgame.R
 import br.com.brunoccbertolini.memessoundgame.databinding.MemesgalleryFragmentBinding
 import br.com.brunoccbertolini.memessoundgame.extension.navigateWithAnimations
-import br.com.brunoccbertolini.memessoundgame.model.AppDatabase
-import br.com.brunoccbertolini.memessoundgame.model.MemeDao
-import br.com.brunoccbertolini.memessoundgame.repository.DatabaseDataSource
-import br.com.brunoccbertolini.memessoundgame.repository.MemeRepository
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.recycler_item.view.*
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.IOException
 
-
+@AndroidEntryPoint
 class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
     MemeGalleryAdapter.OnItemClickListener {
     lateinit var soundPool: SoundPool
@@ -51,17 +45,7 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
         return binding.root
     }
 
-    private val viewModel: MemeGalleryViewModel by viewModels {
-        object : ViewModelProvider.Factory {
-            override fun <T : ViewModel?> create(modelClass: Class<T>): T {
-                val memeDao: MemeDao =
-                    AppDatabase.getInstance(requireContext()).memeDao
-
-                val repository: MemeRepository = DatabaseDataSource(memeDao)
-                return MemeGalleryViewModel(repository) as T
-            }
-        }
-    }
+    private val viewModel: MemeGalleryViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -69,6 +53,7 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
         configureNavListeners()
         observerViewModelEvents()
     }
+
 
 
     private fun checkSdkVersion() {
@@ -154,7 +139,9 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
     override fun onResume() {
         viewModel.getMemes()
         super.onResume()
+
     }
+
 
     override fun onDestroy() {
         soundPool.release()

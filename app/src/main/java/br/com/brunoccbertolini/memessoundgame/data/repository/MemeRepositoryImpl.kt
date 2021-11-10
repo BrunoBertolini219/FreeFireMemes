@@ -1,10 +1,11 @@
-package br.com.brunoccbertolini.memessoundgame.repository
+package br.com.brunoccbertolini.memessoundgame.data.repository
 
 
-import br.com.brunoccbertolini.memessoundgame.model.MemeDao
-import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
+import br.com.brunoccbertolini.memessoundgame.domain.model.MemeDao
+import br.com.brunoccbertolini.memessoundgame.domain.model.MemeEntity
+import javax.inject.Inject
 
-class DatabaseDataSource (private val memeDao: MemeDao
+class MemeRepositoryImpl @Inject constructor(private val memeDao: MemeDao
 ): MemeRepository {
     override suspend fun upsertMeme(title: String, imgURL: String, audioUrl: String): Long {
         val meme = MemeEntity(

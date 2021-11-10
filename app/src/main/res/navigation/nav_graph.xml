@@ -6,7 +6,7 @@
     app:startDestination="@id/memeGalleryFragment">
     <fragment
         android:id="@+id/memeGalleryFragment"
-        android:name="br.com.brunoccbertolini.memessoundgame.view.memegallery.MemeGalleryFragment"
+        android:name="br.com.brunoccbertolini.memessoundgame.ui.memegallery.MemeGalleryFragment"
         android:label="@string/meme_gallery"
         tools:layout="@layout/memesgallery_fragment" >
         <action
@@ -15,7 +15,7 @@
     </fragment>
     <fragment
         android:id="@+id/addMemeFragment"
-        android:name="br.com.brunoccbertolini.memessoundgame.view.addmeme.AddMemeFragment"
+        android:name="br.com.brunoccbertolini.memessoundgame.ui.addmeme.AddMemeFragment"
         android:label="@string/add_gallery"
         tools:layout="@layout/add_meme_fragment" >
         <action

@@ -1,4 +1,4 @@
-package br.com.brunoccbertolini.memessoundgame.view.memegallery
+package br.com.brunoccbertolini.memessoundgame.ui.memegallery
 
 
 import android.util.Log
@@ -10,7 +10,7 @@ import android.widget.TextView
 import androidx.core.text.isDigitsOnly
 import androidx.recyclerview.widget.RecyclerView
 import br.com.brunoccbertolini.memessoundgame.databinding.RecyclerItemBinding
-import br.com.brunoccbertolini.memessoundgame.model.MemeEntity
+import br.com.brunoccbertolini.memessoundgame.domain.model.MemeEntity
 import com.bumptech.glide.Glide
 
 class MemeGalleryAdapter(
