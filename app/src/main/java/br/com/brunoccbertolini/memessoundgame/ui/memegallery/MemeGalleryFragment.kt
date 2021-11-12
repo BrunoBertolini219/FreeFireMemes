@@ -2,11 +2,9 @@ package br.com.brunoccbertolini.memessoundgame.ui.memegallery
 
 
 import android.media.AudioAttributes
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.media.SoundPool
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,7 +14,6 @@ import android.widget.Toast
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.navigation.fragment.findNavController
 import br.com.brunoccbertolini.memessoundgame.R
 import br.com.brunoccbertolini.memessoundgame.databinding.MemesgalleryFragmentBinding
@@ -34,7 +31,7 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
 
 
     private var _binding: MemesgalleryFragmentBinding? = null
-    private val binding:MemesgalleryFragmentBinding get() = _binding!!
+    private val binding: MemesgalleryFragmentBinding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,28 +46,10 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkSdkVersion()
         configureNavListeners()
         observerViewModelEvents()
     }
 
-
-
-    private fun checkSdkVersion() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val audioAttributes = AudioAttributes.Builder()
-                .setUsage(AudioAttributes.USAGE_ASSISTANCE_SONIFICATION)
-                .setContentType(AudioAttributes.CONTENT_TYPE_SONIFICATION)
-                .build()
-
-            soundPool = SoundPool.Builder()
-                .setMaxStreams(1)
-                .setAudioAttributes(audioAttributes)
-                .build()
-        } else {
-            soundPool = SoundPool(1, AudioManager.STREAM_MUSIC, 0)
-        }
-    }
 
     private fun observerViewModelEvents() {
         viewModel.allMemeEvent.observe(viewLifecycleOwner) { allMemes ->
@@ -94,10 +73,10 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
         try {
             val myUri: Uri = Uri.parse(audioUrl)
             Log.e("audioUrl soundP:", myUri.toString())
-            if (audioUrl.isDigitsOnly()) {
-                mediaPlayer = MediaPlayer.create(context, audioUrl.toInt())
+            mediaPlayer = if (audioUrl.isDigitsOnly()) {
+                MediaPlayer.create(context, audioUrl.toInt())
             } else {
-                mediaPlayer = MediaPlayer().apply {
+                MediaPlayer().apply {
                     setDataSource(requireContext().applicationContext, myUri)
                     setAudioAttributes(
                         AudioAttributes.Builder()
@@ -126,10 +105,10 @@ class MemeGalleryFragment : Fragment(R.layout.memesgallery_fragment),
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(resources.getString(R.string.delete_title))
             .setMessage(resources.getString(R.string.delete_message))
-            .setNegativeButton(resources.getString(R.string.decline)){_,_ ->}
+            .setNegativeButton(resources.getString(R.string.decline)) { _, _ -> }
             .setPositiveButton(resources.getString(R.string.accept)) { dialog, which ->
                 viewModel.deleteMeme(id)
-                viewModel.memeRemoveEvent.observe(viewLifecycleOwner){
+                viewModel.memeRemoveEvent.observe(viewLifecycleOwner) {
                     Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                 }
             }

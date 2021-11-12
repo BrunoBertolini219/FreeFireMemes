@@ -1,18 +1,16 @@
 package br.com.brunoccbertolini.memessoundgame.ui.addmeme
 
 
-
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.annotation.RequiresApi
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -29,14 +27,28 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class AddMemeFragment : androidx.fragment.app.Fragment(R.layout.add_meme_fragment) {
 
-    private val IMAGE_GALLERY_REQUEST_CODE: Int = 100
-    private val MEDIA_CONTEXT_REQUEST_CODE: Int = 80
-    private val AUDIO_REQUEST_CODE: Int = 90
+
     private var imageUri: Uri? = null
     private var audioUri: Uri? = null
 
     private var _binding: AddMemeFragmentBinding? = null
     private val binding: AddMemeFragmentBinding get() = _binding!!
+
+    private val getImageContent =
+        registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+            imageUri = uri
+            binding.addImage.setImageURI(uri)
+        }
+
+    private val getAudioContent =
+        registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
+            audioUri = uri
+            val contentSolver = requireContext().applicationContext.contentResolver
+            val takeFlags: Int =
+                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
+            audioUri?.let { contentSolver.takePersistableUriPermission(it, takeFlags) }
+
+        }
 
 
     override fun onCreateView(
@@ -86,7 +98,59 @@ class AddMemeFragment : androidx.fragment.app.Fragment(R.layout.add_meme_fragmen
         }
     }
 
-    private fun checkForPermissions(permission: String, name: String, requestCode: Int) {
+
+    private fun setImage() {
+        binding.addImage.setOnClickListener {
+            checkForPermissions(
+                android.Manifest.permission.MEDIA_CONTENT_CONTROL,
+                "Image Content",
+                IMAGE_REQUEST_CODE
+            )
+            openGallery()
+        }
+    }
+
+    private fun setAudio() {
+        binding.addAudio.setOnClickListener {
+
+            if (checkForPermissions(
+                    android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    "Audio Content",
+                    AUDIO_REQUEST_CODE
+                )
+            ) {
+                openAudio()
+            }
+        }
+    }
+
+    private fun openAudio() {
+        getAudioContent.launch(arrayOf("audio/*"))
+    }
+
+    private fun openGallery() {
+        getImageContent.launch("image/*")
+    }
+
+    private fun setListeners() {
+        binding.addMemeButton.setOnClickListener {
+            val title = binding.addTitleMeme.text.toString()
+            val image = imageUri
+            val audio = audioUri
+
+            if (title.isEmpty() || image == null || audio == null) {
+                Toast.makeText(requireContext(), "Fill out all field, please.", Toast.LENGTH_LONG)
+                    .show()
+            } else {
+                viewModel.getAppSpecificAlbumStorageDir(requireContext(), title)
+                viewModel.addMeme(title, image.toString(), audio.toString())
+                observerEvents()
+                findNavController().navigateWithAnimations(R.id.action_addMemeFragment_to_memeGalleryFragment)
+            }
+        }
+    }
+
+    private fun checkForPermissions(permission: String, name: String, requestCode: Int): Boolean {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             when {
                 checkSelfPermission(
@@ -95,12 +159,14 @@ class AddMemeFragment : androidx.fragment.app.Fragment(R.layout.add_meme_fragmen
                 ) == PackageManager.PERMISSION_GRANTED -> {
                     Toast.makeText(this.requireContext(), "permission granted", Toast.LENGTH_LONG)
                         .show()
+                    return true
                 }
                 shouldShowRequestPermissionRationale(permission) -> showDialog(
                     permission,
                     name,
                     requestCode
                 )
+
 
                 else -> ActivityCompat.requestPermissions(
                     this.requireActivity(),
@@ -109,6 +175,7 @@ class AddMemeFragment : androidx.fragment.app.Fragment(R.layout.add_meme_fragmen
                 )
             }
         }
+        return false
     }
 
     private fun showDialog(permission: String, name: String, requestCode: Int) {
@@ -129,105 +196,15 @@ class AddMemeFragment : androidx.fragment.app.Fragment(R.layout.add_meme_fragmen
         dialog.show()
     }
 
-    private fun setImage() {
-        binding.addImage.setOnClickListener {
-            checkForPermissions(
-                    android.Manifest.permission.MEDIA_CONTENT_CONTROL,
-                    "Gallery Content",
-                    IMAGE_GALLERY_REQUEST_CODE
-            )
-                openGallery()
-
-        }
-    }
-    private fun setAudio() {
-        binding.addAudio.setOnClickListener {
-
-                checkForPermissions(
-                    android.Manifest.permission.MEDIA_CONTENT_CONTROL,
-                    "Audio Content",
-                    MEDIA_CONTEXT_REQUEST_CODE
-                )
-                openAudio()
-        }
-    }
-
-    private fun openAudio() {
-        Intent(Intent.ACTION_OPEN_DOCUMENT, MediaStore.Audio.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "audio/*"
-            startActivityForResult(this, AUDIO_REQUEST_CODE)
-        }
-    }
-
-    private fun openGallery() {
-        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI).apply {
-            type = "image/*"
-            startActivityForResult(this, IMAGE_GALLERY_REQUEST_CODE)
-        }
-    }
-
-    private fun setListeners() {
-        binding.addMemeButton.setOnClickListener {
-            val title = binding.addTitleMeme.text.toString()
-            val image = "$imageUri"
-            val audio = "$audioUri"
-
-            if (title.isEmpty() || image.isEmpty()) {
-                Toast.makeText(requireContext(), "Fill out all field, please.", Toast.LENGTH_LONG)
-                    .show()
-            } else {
-                viewModel.getAppSpecificAlbumStorageDir(requireContext(), title)
-                viewModel.addMeme(title, image, audio)
-                observerEvents()
-                findNavController().navigateWithAnimations(R.id.action_addMemeFragment_to_memeGalleryFragment)
-            }
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        fun innerCheck(name: String) {
-            if (grantResults.isEmpty() || grantResults[0] != PackageManager.PERMISSION_GRANTED) {
-                Toast.makeText(requireContext(), "$name permission refused", Toast.LENGTH_SHORT)
-                    .show()
-            } else {
-                Toast.makeText(requireContext(), "$name permission granted", Toast.LENGTH_SHORT)
-                    .show()
-            }
-        }
-        when (requestCode) {
-            IMAGE_GALLERY_REQUEST_CODE -> innerCheck("Gallery Content")
-
-            AUDIO_REQUEST_CODE -> innerCheck("Audio Content")
-        }
-    }
-
-    @RequiresApi(Build.VERSION_CODES.P)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (data != null && data.data != null) {
-            if (requestCode == IMAGE_GALLERY_REQUEST_CODE) {
-                imageUri = data.data
-
-                binding.addImage.setImageURI(Uri.parse(imageUri.toString()))
-
-            } else if (requestCode == AUDIO_REQUEST_CODE) {
-                audioUri = data.data
-                val contentSolver = requireContext().applicationContext.contentResolver
-                val takeFlags: Int =
-                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_READ_URI_PERMISSION
-                audioUri?.let { contentSolver.takePersistableUriPermission(it, takeFlags) }
-
-            }
-        }
-    }
 
     override fun onDestroyView() {
         _binding = null
         super.onDestroyView()
+    }
+
+    companion object {
+        private const val AUDIO_REQUEST_CODE: Int = 100
+        private const val IMAGE_REQUEST_CODE: Int = 200
     }
 }
 
